@@ -1,0 +1,15 @@
+{
+    "folders": [
+        {
+            "path": "..\\..\\.."
+        }
+    ],
+    "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "xaver.clang-format",
+        "files.associations": {
+            "uihandlerthread.h": "c",
+            "controlthread.h": "c"
+        }
+    }
+}

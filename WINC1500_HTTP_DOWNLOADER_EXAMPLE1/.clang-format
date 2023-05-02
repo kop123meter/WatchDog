@@ -1,0 +1,13 @@
+BasedOnStyle: Google
+IndentWidth: 4
+ColumnLimit: 200
+AllowShortFunctionsOnASingleLine: None
+BinPackParameters: false
+BinPackArguments: false
+BreakBeforeBraces: Linux
+AlignTrailingComments: true
+ReflowComments: true
+AllowAllParametersOfDeclarationOnNextLine: false
+BreakBeforeBinaryOperators: NonAssignment
+DerivePointerAlignment: false
+PointerAlignment: Right
