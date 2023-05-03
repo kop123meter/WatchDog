@@ -58,7 +58,7 @@
 #  define SD_MMC_SPI_PINMUX_PAD2     EXT1_SPI_SERCOM_PINMUX_PAD2
 #  define SD_MMC_SPI_PINMUX_PAD3     EXT1_SPI_SERCOM_PINMUX_PAD3
 
-#  define SD_MMC_CS                  EXT1_PIN_15
+#  define SD_MMC_CS                  PIN_PA07
 
 //#  define SD_MMC_0_CD_GPIO           (EXT1_PIN_10)
 #  define SD_MMC_0_CD_DETECT_VALUE   0

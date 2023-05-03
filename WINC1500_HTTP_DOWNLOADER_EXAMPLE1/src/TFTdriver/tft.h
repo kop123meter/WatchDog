@@ -171,13 +171,13 @@ static const char ASCII[96][5] = {
 #define YELLOW    0xFFE0
 
 #define DAT_PIN PIN_PA20
-#define SLAVE_SELECT_PIN PIN_PB03
+#define SLAVE_SELECT_PIN PIN_PA05
 #define CONF_MASTER_MUX_SETTING SPI_SIGNAL_MUX_SETTING_A
-#define CONF_MASTER_PINMUX_PAD0 PINMUX_PA04D_SERCOM0_PAD0
-#define CONF_MASTER_PINMUX_PAD1 PINMUX_PA05D_SERCOM0_PAD1
+#define CONF_MASTER_PINMUX_PAD0 PINMUX_PB02D_SERCOM5_PAD0
+#define CONF_MASTER_PINMUX_PAD1 PINMUX_PB03D_SERCOM5_PAD1
 #define CONF_MASTER_PINMUX_PAD2 PINMUX_UNUSED
 #define CONF_MASTER_PINMUX_PAD3 PINMUX_UNUSED
-#define CONF_MASTER_SPI_MODULE SERCOM0
+#define CONF_MASTER_SPI_MODULE SERCOM5
 
 
 
@@ -204,7 +204,7 @@ void LCD_setAddr(unsigned short, unsigned short, unsigned short, unsigned short)
 void LCD_clearScreen(unsigned short); // set the color of every pixel
 void configure_port_pins(void);
 //void dingzhen(void);
-void LCD_menu(void);
+void LCD_menu(bool wifistatus);
 
 
 

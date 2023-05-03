@@ -50,6 +50,8 @@ src\newservo\newservo.c
 
 src\SeesawDriver\SeesawDriver.c
 
+src\speaker\speaker.c
+
 src\TFTdriver\tft.c
 
 src\UiHandlerThread\UiHandlerThread.c

@@ -1314,6 +1314,7 @@
     <Folder Include="src\I2cDriver" />
     <Folder Include="src\IMU" />
     <Folder Include="src\ControlThread" />
+    <Folder Include="src\speaker" />
     <Folder Include="src\newservo\" />
     <Folder Include="src\SeesawDriver\" />
     <Folder Include="src\TFTdriver\" />
@@ -1516,6 +1517,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\SeesawDriver\SeesawDriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\speaker\speaker.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\speaker\speaker.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\TFTdriver\tft.c">

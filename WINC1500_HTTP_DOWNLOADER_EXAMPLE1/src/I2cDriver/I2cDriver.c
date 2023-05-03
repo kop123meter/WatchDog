@@ -38,14 +38,14 @@ static int32_t I2cDriverConfigureSensorBus(void)
     struct i2c_master_config config_i2c_master;
     i2c_master_get_config_defaults(&config_i2c_master);
 
-    config_i2c_master.pinmux_pad0 = PINMUX_PA08D_SERCOM2_PAD0;
-    config_i2c_master.pinmux_pad1 = PINMUX_PA09D_SERCOM2_PAD1;
+    config_i2c_master.pinmux_pad0 = PINMUX_PA08C_SERCOM0_PAD0;
+    config_i2c_master.pinmux_pad1 = PINMUX_PA09C_SERCOM0_PAD1;
     /* Change buffer timeout to something longer */
     config_i2c_master.buffer_timeout = 1000;
     /* Initialize and enable device with config. Try three times to initialize */
 
     for (uint8_t i = I2C_INIT_ATTEMPTS; i != 0; i--) {
-        errCodeAsf = i2c_master_init(&i2cSensorBusInstance, SERCOM2, &config_i2c_master);
+        errCodeAsf = i2c_master_init(&i2cSensorBusInstance, SERCOM0, &config_i2c_master);
         if (STATUS_OK == errCodeAsf) {
             error = errCodeAsf;
             break;

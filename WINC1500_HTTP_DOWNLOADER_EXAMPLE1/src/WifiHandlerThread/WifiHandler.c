@@ -14,7 +14,10 @@
 #include <errno.h>
 #include "ControlThread/ControlThread.h"
 #include "UiHandlerThread/UiHandlerThread.h"
-
+#include "bme680/bme680.h"
+#include "newservo/newservo.h"
+#include "TFTdriver/tft.h"
+#include "speaker/speaker.h"
 
 /******************************************************************************
  * Defines
@@ -25,6 +28,8 @@
  ******************************************************************************/
 volatile char mqtt_msg[64] = "{\"d\":{\"temp\":17}}\"";
 volatile char mqtt_msg_temp[64] = "{\"d\":{\"temp\":17}}\"";
+bool wifi_status = false;
+int current_warning = NORMAL_WARNING;
 
 volatile uint32_t temperature = 1;
 int8_t wifiStateMachine = WIFI_MQTT_INIT;   ///< Global variable that determines the state of the WIFI handler.
@@ -32,6 +37,8 @@ QueueHandle_t xQueueWifiState = NULL;       ///< Queue to determine the Wifi sta
 QueueHandle_t xQueueGameBuffer = NULL;      ///< Queue to send the next play to the cloud
 QueueHandle_t xQueueImuBuffer = NULL;       ///< Queue to send IMU data to the cloud
 QueueHandle_t xQueueDistanceBuffer = NULL;  ///< Queue to send the distance to the cloud
+QueueHandle_t xQueueBmeBuffer = NULL;  ///< Queue to send BME data to the cloud
+
 
 /*HTTP DOWNLOAD RELATED DEFINES AND VARIABLES*/
 
@@ -76,6 +83,7 @@ static unsigned char mqtt_send_buffer[MAIN_MQTT_BUFFER_SIZE];
 static void MQTT_InitRoutine(void);
 static void MQTT_HandleGameMessages(void);
 static void MQTT_HandleImuMessages(void);
+static void MQTT_HandleBmeMessages(void);
 static void HTTP_DownloadFileInit(void);
 static void HTTP_DownloadFileTransaction(void);
 /******************************************************************************
@@ -445,8 +453,12 @@ static void wifi_cb(uint8_t u8MsgType, void *pvMsg)
             if (pstrWifiState->u8CurrState == M2M_WIFI_CONNECTED) {
                 LogMessage(LOG_DEBUG_LVL, "wifi_cb: M2M_WIFI_CONNECTED\r\n");
                 m2m_wifi_request_dhcp_client();
+				wifi_status = true;
             } else if (pstrWifiState->u8CurrState == M2M_WIFI_DISCONNECTED) {
                 LogMessage(LOG_DEBUG_LVL, "wifi_cb: M2M_WIFI_DISCONNECTED\r\n");
+				wifi_status = false;
+
+				drawString(20,30,"Wifi is not Connected!",RED,WHITE);
                 clear_state(WIFI_CONNECTED);
                 if (is_state_set(DOWNLOADING)) {
                     f_close(&file_object);
@@ -647,6 +659,24 @@ void SubscribeHandlerLedTopic(MessageData *msgData)
     }
 }
 
+void SubscribeHandlerServoTopic(MessageData *msgData)
+{
+	//LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
+	
+	// Will receive something of the style "rgb(222, 224, 189)"
+	if(strncmp((char *)msgData->topicName->lenstring.data, SERVO_TOPIC,msgData->message->payloadlen) == 0){
+	if (strncmp((char*)msgData->message->payload, LED_TOPIC_LED_ON, msgData->message->payloadlen) == 0) {
+		lock();
+	}
+	else if (strncmp((char*)msgData->message->payload, LED_TOPIC_LED_OFF, msgData->message->payloadlen) == 0) {
+		unlock();
+	}
+	}
+}
+
+
+
+
 void SubscribeHandlerGameTopic(MessageData *msgData)
 {
     struct GameDataPacket game;
@@ -685,6 +715,11 @@ void SubscribeHandlerImuTopic(MessageData *msgData)
 {
 	LogMessage(LOG_DEBUG_LVL, "\r\nIMU topic received!\r\n");
     LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
+}
+void SubscribeHandlerBmeTopic(MessageData *msgData)
+{
+	LogMessage(LOG_DEBUG_LVL, "\r\nBME topic received!\r\n");
+	LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
 }
 
 void SubscribeHandlerDistanceTopic(MessageData *msgData)
@@ -749,9 +784,12 @@ static void mqtt_callback(struct mqtt_module *module_inst, int type, union mqtt_
         case MQTT_CALLBACK_CONNECTED:
             if (data->connected.result == MQTT_CONN_RESULT_ACCEPT) {
                 /* Subscribe chat topic. */
-                mqtt_subscribe(module_inst, GAME_TOPIC_IN, 2, SubscribeHandlerGameTopic);
-                mqtt_subscribe(module_inst, LED_TOPIC, 2, SubscribeHandlerLedTopic);
-                mqtt_subscribe(module_inst, IMU_TOPIC, 2, SubscribeHandlerImuTopic);
+               // mqtt_subscribe(module_inst, GAME_TOPIC_IN, 2, SubscribeHandlerGameTopic);
+                //mqtt_subscribe(module_inst, LED_TOPIC, 2, SubscribeHandlerLedTopic);
+                //mqtt_subscribe(module_inst, IMU_TOPIC, 2, SubscribeHandlerImuTopic);
+				//mqtt_subscribe(module_inst, BME_TOPIC, 2, SubscribeHandlerBmeTopic);
+				//mqtt_subscribe(module_inst, SERVO_LOCK_TOPIC, 0, SubscribeHandlerServoLockTopic);
+				mqtt_subscribe(module_inst, SERVO_TOPIC, 2, SubscribeHandlerServoTopic);
                 /* Enable USART receiving callback. */
 
                 LogMessage(LOG_DEBUG_LVL, "MQTT Connected\r\n");
@@ -938,6 +976,8 @@ static void MQTT_HandleTransactions(void)
     // Check if data has to be sent!
     MQTT_HandleGameMessages();
     MQTT_HandleImuMessages();
+	MQTT_HandleBmeMessages();
+
 
     // Handle MQTT messages
     if (mqtt_inst.isConnected) mqtt_yield(&mqtt_inst, 100);
@@ -951,6 +991,15 @@ static void MQTT_HandleImuMessages(void)
         mqtt_publish(&mqtt_inst, IMU_TOPIC, mqtt_msg, strlen(mqtt_msg), 1, 0);
     }
 }
+static void MQTT_HandleBmeMessages(void)
+{
+	struct BMEDataPacket bmeDataVar;
+	if (pdPASS == xQueueReceive(xQueueBmeBuffer, &bmeDataVar, 0)) {
+		snprintf(mqtt_msg, 63, "{\"temp\":%d, \"hum\": %d, \"pre\": %d, \"war\": %d, \"gas\": %d}", bmeDataVar.temperature, bmeDataVar.humidity, bmeDataVar.pressure,bmeDataVar.warning_status,bmeDataVar.gas_res);
+		mqtt_publish(&mqtt_inst, BME_TOPIC, mqtt_msg, strlen(mqtt_msg), 1, 0);
+	}
+}
+
 
 static void MQTT_HandleGameMessages(void)
 {
@@ -992,14 +1041,20 @@ void vWifiTask(void *pvParameters)
     // Create buffers to send data
     xQueueWifiState = xQueueCreate(5, sizeof(uint32_t));
     xQueueImuBuffer = xQueueCreate(5, sizeof(struct ImuDataPacket));
+	xQueueBmeBuffer = xQueueCreate(5,sizeof(struct BMEDataPacket));
     xQueueGameBuffer = xQueueCreate(2, sizeof(struct GameDataPacket));
     xQueueDistanceBuffer = xQueueCreate(5, sizeof(uint16_t));
 
-    if (xQueueWifiState == NULL || xQueueImuBuffer == NULL || xQueueGameBuffer == NULL || xQueueDistanceBuffer == NULL) {
+    if (xQueueWifiState == NULL || xQueueImuBuffer == NULL || xQueueGameBuffer == NULL || xQueueDistanceBuffer == NULL || xQueueBmeBuffer == NULL) {
         SerialConsoleWriteString("ERROR Initializing Wifi Data queues!\r\n");
     }
 
     SerialConsoleWriteString("ESE516 - Wifi Init Code\r\n");
+	
+	
+	/* Initialize the Locker */
+	lock();
+	
     /* Initialize the Timer. */
     configure_timer();
 
@@ -1010,7 +1065,7 @@ void vWifiTask(void *pvParameters)
     configure_mqtt();
 
     /* Initialize SD/MMC storage. */
-    //init_storage();
+    init_storage();
 
     /*Initialize BUTTON 0 as an external interrupt*/
     configure_extint_channel();
@@ -1045,10 +1100,25 @@ void vWifiTask(void *pvParameters)
         sw_timer_task(&swt_module_inst);
     }
 
-    vTaskDelay(1000);
+    vTaskDelay(10);
 
     wifiStateMachine = WIFI_MQTT_HANDLE;
+   
     while (1) {
+		read_sensor_data();
+		int temp = (int)getTemperature();
+		int hum = (int)getHumidity();
+		int pressure = (int)getPressure();
+		int gas = (int)getGasResistance();
+		check_sensor_data(temp,hum,pressure,gas);
+		struct BMEDataPacket bme;
+		bme.temperature = temp;
+		bme.humidity = hum;
+		bme.pressure = pressure;
+		bme.warning_status = current_warning;
+		bme.gas_res = (1200 - gas)/1200;
+		WifiAddBmeDataToQueue(&bme);
+		LCD_menu(wifi_status);
         switch (wifiStateMachine) {
             case (WIFI_MQTT_INIT): {
                 MQTT_InitRoutine();
@@ -1090,7 +1160,7 @@ void vWifiTask(void *pvParameters)
 
         }
 
-        vTaskDelay(100);
+        vTaskDelay(1);
     }
     return;
 }
@@ -1115,6 +1185,11 @@ int WifiAddImuDataToQueue(struct ImuDataPacket *imuPacket)
 {
     int error = xQueueSend(xQueueImuBuffer, imuPacket, (TickType_t)10);
     return error;
+}
+int WifiAddBmeDataToQueue(struct BMEDataPacket *bmePacket)
+{
+	int error = xQueueSend(xQueueBmeBuffer, bmePacket, (TickType_t)10);
+	return error;
 }
 
 /**
@@ -1145,4 +1220,16 @@ int WifiAddGameDataToQueue(struct GameDataPacket *game)
 {
     int error = xQueueSend(xQueueGameBuffer, game, (TickType_t)10);
     return error;
+}
+
+void check_sensor_data(int temp,int hum,int pre,int gas){
+	if(temp > MAX_TEMP)
+	{
+		current_warning = TEMP_WARNING;
+		warning_speaker();
+	}
+	if(gas < MAX_GAS){
+		current_warning = GAS_WARNING;
+		warning_speaker();
+	}
 }

@@ -26,7 +26,7 @@ void lock()
 {
 	int count = 0;
 	port_pin_set_output_level(SERVO_PIN,0);
-    for(int i = 0;i<1750;i++){
+    for(int i = 0;i<1000;i++){
 		if(count == 4)
 		{
 			port_pin_set_output_level(SERVO_PIN,1);
@@ -37,8 +37,8 @@ void lock()
 			port_pin_set_output_level(SERVO_PIN,0);
 			
 		}
-		vTaskDelay(2);
-		//delay_ms(1.5);
+		vTaskDelay(1);
+		//delay_ms(1);
 		count++;
 	}
 	port_pin_set_output_level(SERVO_PIN,0);
@@ -48,7 +48,7 @@ void lock()
 void unlock(){
 	int count = 0;
 	port_pin_set_output_level(SERVO_PIN,0);
-	 for(int i = 0;i<500;i++){
+	 for(int i = 0;i<950;i++){
 		if(count == 4)
 		{
 			port_pin_set_output_level(SERVO_PIN,1);
@@ -57,7 +57,7 @@ void unlock(){
 		else{
 			port_pin_set_output_level(SERVO_PIN,0);
 		}
-		vTaskDelay(7);
+		vTaskDelay(9);
 		//delay_ms(2);
 		count++;
 	}

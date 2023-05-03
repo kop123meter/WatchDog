@@ -19,6 +19,7 @@
 #include "newservo/newservo.h"
 #include "bme680/bme680.h"
 #include "I2cDriver/I2cDriver.h"
+#include "speaker/speaker.h"
 
 /******************************************************************************
  * Defines
@@ -496,12 +497,6 @@ BaseType_t CLI_UNLOCK(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_
 	    return pdFALSE;
 }
 BaseType_t CLI_BME(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8_t *pcCommandString){
-	int8_t buffer[50];
-	
-	read_sensor_data();
-	//float temp = getTemperature();
-	float hum = getHumidity();
-	float pressure = getPressure();
-   snprintf(buffer, sizeof(buffer), "BME Sensor Data: %d %d %d\r\n", (int)getTemperature(), (int)hum, (int)pressure);
+	warning_speaker();
 	return pdFALSE;
 }

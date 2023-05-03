@@ -1,9 +1,6 @@
-src/UiHandlerThread/UiHandlerThread.d \
- src/UiHandlerThread/UiHandlerThread.o: \
- ../src/UiHandlerThread/UiHandlerThread.c \
- ../src/UiHandlerThread/UiHandlerThread.h \
- ../src/WifiHandlerThread/WifiHandler.h ../src/asf.h \
- ../src/ASF/sam0/drivers/adc/adc.h ../src/ASF/sam0/utils/compiler.h \
+src/speaker/speaker.d src/speaker/speaker.o: ../src/speaker/speaker.c \
+ ../src/speaker/speaker.h ../src/asf.h ../src/ASF/sam0/drivers/adc/adc.h \
+ ../src/ASF/sam0/utils/compiler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stddef.h \
  ../src/ASF/common/utils/parts.h ../src/ASF/sam0/utils/status_codes.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h \
@@ -235,45 +232,9 @@ src/UiHandlerThread/UiHandlerThread.d \
  ../src/ASF/sam0/drivers/tc/tc_interrupt.h \
  ../src/ASF/sam0/drivers/tc/tc.h ../src/ASF/sam0/drivers/tcc/tcc.h \
  ../src/ASF/sam0/drivers/tcc/tcc_callback.h \
- ../src/ASF/sam0/drivers/tcc/tcc.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTClient/Wrapper/mqtt.h \
- ../src/ASF/common/components/wifi/winc1500/socket/include/socket.h \
- ../src/ASF/common/components/wifi/winc1500/common/include/nm_common.h \
- ../src/ASF/common/components/wifi/winc1500/bsp/include/nm_bsp.h \
- ../src/ASF/common/components/wifi/winc1500/common/include/nm_debug.h \
- ../src/ASF/common/components/wifi/winc1500/bsp/include/nm_bsp_internal.h \
- ../src/ASF/common/components/wifi/winc1500/bsp/include/nm_bsp_samd21.h \
- ../src/config/conf_winc.h ../src/SerialConsole/SerialConsole.h \
- ../src/SerialConsole/circular_buffer.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h \
- ../src/ASF/common/components/wifi/winc1500/driver/include/m2m_types.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTClient/Platforms/mqtt_platform.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTClient/Platforms/MCHP_ATWx.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTClient/MQTTClient.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTPacket.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTConnect.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTPublish.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTSubscribe.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTUnsubscribe.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTFormat.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/StackTrace.h \
- ../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTPacket.h \
- ../src/SerialConsole/SerialConsole.h \
- ../src/ASF/common/components/wifi/winc1500/driver/include/m2m_wifi.h \
- ../src/ASF/common/components/wifi/winc1500/driver/source/nmdrv.h \
- ../src/iot/http/http_client.h ../src/iot/sw_timer.h \
- ../src/ASF/common/components/wifi/winc1500/http_downloader_example/samd21g18a_samw25_xplained_pro/conf_sw_timer.h \
- ../src/iot/http/http_entity.h ../src/main.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\errno.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\errno.h \
- ../src/DistanceDriver/DistanceSensor.h ../src/IMU/lsm6dso_reg.h \
- ../src/SeesawDriver/Seesaw.h ../src/I2cDriver/I2cDriver.h \
- ../src/TFTdriver/tft.h ../src/newservo/newservo.h ../src/bme680/bme680.h \
- ../src/bme680/bme680_defs.h ../src/speaker/speaker.h
+ ../src/ASF/sam0/drivers/tcc/tcc.h
 
-../src/UiHandlerThread/UiHandlerThread.h:
-
-../src/WifiHandlerThread/WifiHandler.h:
+../src/speaker/speaker.h:
 
 ../src/asf.h:
 
@@ -760,87 +721,3 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/sam0/drivers/tcc/tcc_callback.h:
 
 ../src/ASF/sam0/drivers/tcc/tcc.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTClient/Wrapper/mqtt.h:
-
-../src/ASF/common/components/wifi/winc1500/socket/include/socket.h:
-
-../src/ASF/common/components/wifi/winc1500/common/include/nm_common.h:
-
-../src/ASF/common/components/wifi/winc1500/bsp/include/nm_bsp.h:
-
-../src/ASF/common/components/wifi/winc1500/common/include/nm_debug.h:
-
-../src/ASF/common/components/wifi/winc1500/bsp/include/nm_bsp_internal.h:
-
-../src/ASF/common/components/wifi/winc1500/bsp/include/nm_bsp_samd21.h:
-
-../src/config/conf_winc.h:
-
-../src/SerialConsole/SerialConsole.h:
-
-../src/SerialConsole/circular_buffer.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h:
-
-../src/ASF/common/components/wifi/winc1500/driver/include/m2m_types.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTClient/Platforms/mqtt_platform.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTClient/Platforms/MCHP_ATWx.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTClient/MQTTClient.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTPacket.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTConnect.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTPublish.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTSubscribe.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTUnsubscribe.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTFormat.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/StackTrace.h:
-
-../src/ASF/thirdparty/pahomqtt/MQTTPacket/MQTTPacket.h:
-
-../src/SerialConsole/SerialConsole.h:
-
-../src/ASF/common/components/wifi/winc1500/driver/include/m2m_wifi.h:
-
-../src/ASF/common/components/wifi/winc1500/driver/source/nmdrv.h:
-
-../src/iot/http/http_client.h:
-
-../src/iot/sw_timer.h:
-
-../src/ASF/common/components/wifi/winc1500/http_downloader_example/samd21g18a_samw25_xplained_pro/conf_sw_timer.h:
-
-../src/iot/http/http_entity.h:
-
-../src/main.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\errno.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\errno.h:
-
-../src/DistanceDriver/DistanceSensor.h:
-
-../src/IMU/lsm6dso_reg.h:
-
-../src/SeesawDriver/Seesaw.h:
-
-../src/I2cDriver/I2cDriver.h:
-
-../src/TFTdriver/tft.h:
-
-../src/newservo/newservo.h:
-
-../src/bme680/bme680.h:
-
-../src/bme680/bme680_defs.h:
-
-../src/speaker/speaker.h:

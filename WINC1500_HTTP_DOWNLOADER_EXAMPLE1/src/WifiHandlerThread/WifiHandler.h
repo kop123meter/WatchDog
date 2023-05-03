@@ -76,6 +76,16 @@ struct ImuDataPacket {
     int16_t zmg;
 };
 
+// Structure definition that holds BME data
+struct BMEDataPacket {
+	int temperature;
+	int humidity;
+	int pressure;
+	int warning_status;
+	int gas_res;
+};
+
+
 // Structure to hold a game packet
 struct GameDataPacket {
     uint8_t game[GAME_SIZE];
@@ -97,6 +107,10 @@ struct RgbColorPacket {
 /* Limitation of user name. */
 #define MAIN_CHAT_USER_NAME_SIZE 64
 
+
+#define BME_TOPIC "WATCHDOG_SENSOR"
+#define SERVO_TOPIC "WATCHDOG_SERVO"
+#define WARNING_TOPIC "WATCHDOG_WARNING"
 
 
 
@@ -120,16 +134,17 @@ struct RgbColorPacket {
 #define DISTANCE_TOPIC "P2_DISTANCE_ESE516_T0"  // Students to change to an unique identifier for each device! Distance Data
 #define TEMPERATURE_TOPIC "P2_TEMPERATURE_ESE516_T0" // Students to change to an unique identifier for each device! Distance Data
 
+
 #endif
 
 #define LED_TOPIC_LED_OFF "false"
 #define LED_TOPIC_LED_ON "true"
 
 // Cloud MQTT User
-#define CLOUDMQTT_USER_ID "rttyobej"
+#define CLOUDMQTT_USER_ID "kop"
 
 // Cloud MQTT pASSWORD
-#define CLOUDMQTT_USER_PASSWORD "BrsJBNVoQBl7"
+#define CLOUDMQTT_USER_PASSWORD "Lize987654321"
 
 #define CLOUDMQTT_PORT 1883
 
@@ -149,7 +164,15 @@ static const char main_mqtt_broker[] = "broker.hivemq.com";
 /******************************************************************************
  * Structures and Enumerations
  ******************************************************************************/
+#define TEMP_WARNING 1
+#define HUM_WARNING 2
+#define PRE_WARNING 3
+#define GAS_WARNING 4
+#define NORMAL_WARNING 5
+#define MAX_TEMP 30
+#define MIN_TEMP -1
 
+#define MAX_GAS 100
 /******************************************************************************
  * Global Function Declaration
  ******************************************************************************/
@@ -158,14 +181,18 @@ void init_storage(void);
 void WifiHandlerSetState(uint8_t state);
 int WifiAddDistanceDataToQueue(uint16_t *distance);
 int WifiAddImuDataToQueue(struct ImuDataPacket *imuPacket);
+int WifiAddBmeDataToQueue(struct BMEDataPacket *bmePacket);
 int WifiAddGameDataToQueue(struct GameDataPacket *game);
 void SubscribeHandlerLedTopic(MessageData *msgData);
 void SubscribeHandlerGameTopic(MessageData *msgData);
 void SubscribeHandlerImuTopic(MessageData *msgData);
+void SubscribeHandlerBmeTopic(MessageData *msgData);
 void SubscribeHandlerDistanceTopic(MessageData *msgData);
+void SubscribeHandlerServoLockTopic(MessageData *msgData);
+void SubscribeHandlerServoUnlockTopic(MessageData *msgData);
 void configure_extint_channel(void);
 void configure_extint_callbacks(void);
-
+void check_sensor_data(int temp,int hum,int pre,int gas);
 #ifdef __cplusplus
 }
 #endif

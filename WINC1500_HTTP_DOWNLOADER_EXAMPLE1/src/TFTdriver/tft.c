@@ -443,23 +443,34 @@ void dingzhen(void){
 }*/
 
 
-void LCD_menu(void){
-	LCD_clearScreen(WHITE);
+void LCD_menu(bool wifistatus){
+	//LCD_clearScreen(WHITE);
+	if(wifistatus)
+	drawString(20,30,"WIFI is Connected!    ",BLUE,WHITE);
+	else
+	drawString(20,30,"Wifi is not Connected!",BLUE,WHITE);
 	drawString(20,40,"ESE-516",BLACK,WHITE);
 	drawString(50,50,"Welcome",BLACK,WHITE);
 	if(getLock()){
-		drawString(20,60,"WatchDog Status:Locked",RED,WHITE);
+		drawString(20,60,"WatchDog Status:Locked  ",RED,WHITE);
 	}
 	else{drawString(20,60,"WatchDog Status:Unlocked",RED,WHITE);}
 	
 	char buffer[20];
 	memset(buffer,0,sizeof(buffer));
-	read_sensor_data();
 	float temp = getTemperature();
 	float hum = getHumidity();
 	float pressure = getPressure();
+	int gas = getGasResistance();
 	snprintf(buffer,sizeof(buffer),"Temperature: %d ",(int)temp);
 	drawString(20,70,buffer,BLACK,WHITE);
+	snprintf(buffer,sizeof(buffer),"Humidity: %d %%",(int)hum);
+	drawString(20,80,buffer,BLACK,WHITE);
+	snprintf(buffer,sizeof(buffer),"Pressure: %d hPa",(int)pressure);
+	drawString(20,90,buffer,BLACK,WHITE);
+	pressure = (1200 - pressure) / 1200;
+	snprintf(buffer,sizeof(buffer),"Smoke: %d %%",(int)pressure);
+	drawString(20,100,buffer,BLACK,WHITE);
 	
 
 }

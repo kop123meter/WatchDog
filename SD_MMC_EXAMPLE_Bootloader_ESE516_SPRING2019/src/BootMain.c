@@ -81,7 +81,7 @@ int main(void)
 	InitializeSerialConsole();
 	system_interrupt_enable_global();
 	/* Initialize SD MMC stack */
-	//sd_mmc_init();
+	sd_mmc_init();
 
 	//Initialize the NVM driver
 	configure_nvm();
@@ -98,9 +98,10 @@ int main(void)
 
 
 	/*2.) STARTS SIMPLE SD CARD MOUNTING AND TEST!*/
-/*
+
 	//EXAMPLE CODE ON MOUNTING THE SD CARD AND WRITING TO A FILE
 	//See function inside to see how to open a file
+	
 	SerialConsoleWriteString("\x0C\n\r-- SD/MMC Card Example on FatFs --\n\r");
 
 	if(StartFilesystemAndTest() == false)
@@ -113,7 +114,7 @@ int main(void)
 	{
 		SerialConsoleWriteString("SD CARD mount success! Filesystem also mounted. \r\n");
 	}
-*/
+
 	/*END SIMPLE SD CARD MOUNTING AND TEST!*/
 
 
@@ -127,7 +128,7 @@ int main(void)
 		
 		//Deinitialize HW - deinitialize started HW here!
 		DeinitializeSerialConsole(); //Deinitializes UART
-		//sd_mmc_deinit(); //Deinitialize SD CARD
+		sd_mmc_deinit(); //Deinitialize SD CARD
 
 
 		//Jump to application

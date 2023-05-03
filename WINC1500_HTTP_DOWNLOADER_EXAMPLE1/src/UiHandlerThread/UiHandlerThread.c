@@ -23,9 +23,9 @@ Thread for ESE516 Spring (Online) Edition
 #include "gfx_mono.h"
 #include "main.h"
 #include "TFTdriver/tft.h"
-//#include "servo/servo.h"
 #include "newservo/newservo.h"
 #include "bme680/bme680.h"
+#include "speaker/speaker.h"
 
 /******************************************************************************
  * Defines
@@ -73,22 +73,23 @@ void vUiHandlerTask(void *pvParameters)
     SerialConsoleWriteString("UI Task Started!");
     uiState = UI_STATE_IGNORE_PRESSES;  // Initial state
    
+   configure_port_speaker_pins();
 	configure_port_servo_pins();
 	init_bme680();
 	read_sensor_data();
-	//read sensor data
+		//read sensor data
 
-	
-	
-	
-	
-    configure_port_pins();
-	//servopulse(200);
-	//configure_tcc();
-	//setPulse(2.4);
-	 //lock();
-	 
-	 LCD_init();
+		
+		
+		
+		
+	configure_port_pins();
+		//servopulse(200);
+		//configure_tcc();
+		//setPulse(2.4);
+		//lock();
+		
+	LCD_init();
 	LCD_clearScreen(WHITE);
 	 
 	 
@@ -105,7 +106,8 @@ void vUiHandlerTask(void *pvParameters)
 	
     while (1) {
 	
-		LCD_menu();
+
+	  // warning_speaker();
         switch (uiState) {
             case (UI_STATE_IGNORE_PRESSES): {
            
