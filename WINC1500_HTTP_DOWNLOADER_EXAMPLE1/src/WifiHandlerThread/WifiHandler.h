@@ -41,7 +41,7 @@ extern "C" {
 /** Wi-Fi AP Settings. */
 #define MAIN_WLAN_SSID "h"             /**< Destination SSID. Change to your WIFI SSID */
 #define MAIN_WLAN_AUTH M2M_WIFI_SEC_WPA_PSK /**< Security manner */
-#define MAIN_WLAN_PSK "lize654321"            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
+#define MAIN_WLAN_PSK ""            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
 
 /** IP address parsing. */
 #define IPV4_BYTE(val, index) ((val >> (index * 8)) & 0xFF)
@@ -144,9 +144,9 @@ struct RgbColorPacket {
 #define CLOUDMQTT_USER_ID "kop"
 
 // Cloud MQTT pASSWORD
-#define CLOUDMQTT_USER_PASSWORD "Lize987654321"
+#define CLOUDMQTT_USER_PASSWORD ""
 
-#define CLOUDMQTT_PORT 1883
+#define CLOUDMQTT_PORT ""
 
 /*
  * A MQTT broker server which was connected.
