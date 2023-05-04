@@ -23,15 +23,14 @@ void warning_speaker(){
 		{
 			port_pin_set_output_level(SPEAKER_PIN,1);
 			count = 0;
-			if(flag <= MIN_PERIOD){
-				flag = MAX_PERIOD;
+			if(flag >= MAX_PERIOD){
+				flag = MIN_PERIOD;
 			}	else{
-				flag = 1000 / (1000/flag + 50);
+				flag = 1000 / (1000/flag - ((1000/MIN_PERIOD - 1000/MAX_PERIOD) / 44100));
 			}
 		}
 		else{
-			port_pin_set_output_level(SPEAKER_PIN,0);
-			
+			port_pin_set_output_level(SPEAKER_PIN,0);	
 		}
 		vTaskDelay(flag);
 		//delay_ms(1);

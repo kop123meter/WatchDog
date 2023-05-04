@@ -37,7 +37,10 @@ void lock()
 			port_pin_set_output_level(SERVO_PIN,0);
 			
 		}
+		//MG90S
 		vTaskDelay(1);
+		//A0090
+		//vTaskDelay(2.4);
 		//delay_ms(1);
 		count++;
 	}
@@ -48,7 +51,7 @@ void lock()
 void unlock(){
 	int count = 0;
 	port_pin_set_output_level(SERVO_PIN,0);
-	 for(int i = 0;i<950;i++){
+	 for(int i = 0;i<300;i++){
 		if(count == 4)
 		{
 			port_pin_set_output_level(SERVO_PIN,1);
@@ -57,7 +60,10 @@ void unlock(){
 		else{
 			port_pin_set_output_level(SERVO_PIN,0);
 		}
+		//MG90S
 		vTaskDelay(9);
+		//A0090
+		//vTaskDelay(3.8);
 		//delay_ms(2);
 		count++;
 	}

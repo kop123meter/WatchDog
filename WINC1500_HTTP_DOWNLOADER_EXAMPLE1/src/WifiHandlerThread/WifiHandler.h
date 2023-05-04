@@ -39,9 +39,9 @@ extern "C" {
 #define WIFI_PRIORITY (configMAX_PRIORITIES - 2)
 
 /** Wi-Fi AP Settings. */
-#define MAIN_WLAN_SSID "h"             /**< Destination SSID. Change to your WIFI SSID */
+#define MAIN_WLAN_SSID "AirPennNet-Device"             /**< Destination SSID. Change to your WIFI SSID */
 #define MAIN_WLAN_AUTH M2M_WIFI_SEC_WPA_PSK /**< Security manner */
-#define MAIN_WLAN_PSK "lize654321"            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
+#define MAIN_WLAN_PSK "penn1740wifi"            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
 
 /** IP address parsing. */
 #define IPV4_BYTE(val, index) ((val >> (index * 8)) & 0xFF)
@@ -169,7 +169,7 @@ static const char main_mqtt_broker[] = "broker.hivemq.com";
 #define PRE_WARNING 3
 #define GAS_WARNING 4
 #define NORMAL_WARNING 5
-#define MAX_TEMP 30
+#define MAX_TEMP 27
 #define MIN_TEMP -1
 
 #define MAX_GAS 100

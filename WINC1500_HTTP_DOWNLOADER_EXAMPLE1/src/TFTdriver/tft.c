@@ -447,14 +447,11 @@ void LCD_menu(bool wifistatus){
 	//LCD_clearScreen(WHITE);
 	if(wifistatus)
 	drawString(20,30,"WIFI is Connected!    ",BLUE,WHITE);
-	else
-	drawString(20,30,"Wifi is not Connected!",BLUE,WHITE);
-	drawString(20,40,"ESE-516",BLACK,WHITE);
-	drawString(50,50,"Welcome",BLACK,WHITE);
+	drawString(50,50,"Welcome home!",BLACK,WHITE);
 	if(getLock()){
-		drawString(20,60,"WatchDog Status:Locked  ",RED,WHITE);
+		drawString(20,60,"WatchDog Status: Locked  ",RED,WHITE);
 	}
-	else{drawString(20,60,"WatchDog Status:Unlocked",RED,WHITE);}
+	else{drawString(20,60,"WatchDog Status: Unlocked",RED,WHITE);}
 	
 	char buffer[20];
 	memset(buffer,0,sizeof(buffer));
@@ -462,7 +459,7 @@ void LCD_menu(bool wifistatus){
 	float hum = getHumidity();
 	float pressure = getPressure();
 	int gas = getGasResistance();
-	snprintf(buffer,sizeof(buffer),"Temperature: %d ",(int)temp);
+	snprintf(buffer,sizeof(buffer),"Temperature: %d C",(int)temp);
 	drawString(20,70,buffer,BLACK,WHITE);
 	snprintf(buffer,sizeof(buffer),"Humidity: %d %%",(int)hum);
 	drawString(20,80,buffer,BLACK,WHITE);

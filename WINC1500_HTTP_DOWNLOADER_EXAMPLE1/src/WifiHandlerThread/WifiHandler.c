@@ -1227,9 +1227,11 @@ void check_sensor_data(int temp,int hum,int pre,int gas){
 	{
 		current_warning = TEMP_WARNING;
 		warning_speaker();
+		unlock();
 	}
 	if(gas < MAX_GAS){
 		current_warning = GAS_WARNING;
 		warning_speaker();
+		unlock();
 	}
 }
