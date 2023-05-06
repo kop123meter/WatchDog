@@ -10,12 +10,13 @@
 #ifndef NEWSERVO_H_
 #define NEWSERVO_H_
 
-
+#define SERVO_PIN PIN_PA03
 void configure_port_servo_pins(void);
 void lock();
 void unlock();
 bool getLock();
 
-
+void setLock();
+void setUnLock();
 
 #endif /* NEWSERVO_H_ */

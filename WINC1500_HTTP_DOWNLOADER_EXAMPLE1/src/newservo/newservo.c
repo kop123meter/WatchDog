@@ -27,7 +27,7 @@ void lock()
 	int count = 0;
 	port_pin_set_output_level(SERVO_PIN,0);
     for(int i = 0;i<1000;i++){
-		if(count == 4)
+		if(count == 8)
 		{
 			port_pin_set_output_level(SERVO_PIN,1);
 			count = 0;
@@ -72,4 +72,10 @@ void unlock(){
 }
 bool getLock(){
 	return locker_status;
+}
+void setLock(){
+	locker_status = LOCKER_STATUS_LOCKED;
+}
+void setUnLock(){
+	locker_status = LOCKER_STATUS_UNLOCKED;
 }

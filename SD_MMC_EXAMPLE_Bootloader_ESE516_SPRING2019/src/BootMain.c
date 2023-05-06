@@ -45,7 +45,8 @@ struct usart_module cdc_uart_module; ///< Structure for UART module connected to
 static void jumpToApplication(void);
 static bool StartFilesystemAndTest(void);
 static void configure_nvm(void);
-
+void clean_buffer();
+void read_bin_file();
 
 /******************************************************************************
 * Global Variables
@@ -53,11 +54,14 @@ static void configure_nvm(void);
 //INITIALIZE VARIABLES
 char test_file_name[] = "0:sd_mmc_test.txt";	///<Test TEXT File name
 char test_bin_file[] = "0:sd_binary.bin";	///<Test BINARY File name
+char testA_bin_file[] = "0:ESE516_MAIN_FW.bin";	///<Test BINARY File name
 Ctrl_status status; ///<Holds the status of a system initialization
 FRESULT res; //Holds the result of the FATFS functions done on the SD CARD TEST
 FATFS fs; //Holds the File System of the SD CARD
 FIL file_object; //FILE OBJECT used on main for the SD Card Test
 
+FIL file_objectA;
+FRESULT resA;
 
 
 /******************************************************************************
@@ -101,7 +105,6 @@ int main(void)
 
 	//EXAMPLE CODE ON MOUNTING THE SD CARD AND WRITING TO A FILE
 	//See function inside to see how to open a file
-	
 	SerialConsoleWriteString("\x0C\n\r-- SD/MMC Card Example on FatFs --\n\r");
 
 	if(StartFilesystemAndTest() == false)
@@ -119,7 +122,15 @@ int main(void)
 
 
 	/*3.) STARTS BOOTLOADER HERE!*/
-
+     testA_bin_file[0] = LUN_ID_SD_MMC_0_MEM +'0';
+	 resA = f_open(&file_objectA,(char const *)testA_bin_file,FA_READ);
+	 if(resA == FR_OK){
+		 read_bin_file(file_objectA);
+		 f_close(&file_objectA);
+	 }
+	 else{
+		  f_close(&file_objectA);
+	 }
 
 
 	//4.) DEINITIALIZE HW AND JUMP TO MAIN APPLICATION!
@@ -306,5 +317,80 @@ static void configure_nvm(void)
     nvm_set_config(&config_nvm);
 }
 
+void clean_buffer(){
+	struct nvm_parameters parameters;
+	nvm_get_parameters (&parameters);
+	char helpStr[64]; 
+	snprintf(helpStr, 63,"NVM Info: Number of Pages %d. Size of a page: %d bytes. \r\n", parameters.nvm_number_of_pages, parameters.page_size);
+	SerialConsoleWriteString(helpStr);
+	for(int i = 0; i < (parameters.nvm_number_of_pages / 4) - 288; i++){
+		enum status_code nvmError = nvm_erase_row((APP_START_ADDRESS + i * 256));
+		
+		if(nvmError != STATUS_OK)
+		{
+			snprintf(helpStr, 63,"NVM ERROR: Erase error at row %d \r\n", i + 288);
+			SerialConsoleWriteString(helpStr);
+			return;
+		}
+	}
+	for(int iter = 0; iter < 256; iter++)
+	{
+		char *a = (char *)(APP_START_ADDRESS + iter); //Pointer pointing to address APP_START_ADDRESS
+		if(*a != 0xFF)
+		{
+			SerialConsoleWriteString("Error - test page is not erased!");
+			break;
+		}
+	}
+}
+void read_bin_file(FIL file_object){
+	char helpStr[64]; 
+	uint32_t resultCrcSd = 0;
+	uint32_t resultCrcNVM = 0;
+	clean_buffer();
+	uint8_t readBuffer[256];
+int i =0;
+UINT numBytesRead = 256;
+//int numberBytesTotal = 0;
+while(numBytesRead == 256){
+	res = f_read(&file_object, &readBuffer[0],  256, &numBytesRead);
+		SerialConsoleWriteString("read success \r\n");
+	if(res != FR_OK){
+		SerialConsoleWriteString("read error \r\n");
+		f_close(&file_object);
+		return false;
+	}
 
+	int cur_address = APP_START_ADDRESS + (i*256);
+	
+	//pad last data with 0xFF
+	if(numBytesRead < 256){
+		for(int iter = numBytesRead; iter < 256; iter++){
+			readBuffer[iter] = 0xFF;
+		}
+	}
 
+	res = nvm_write_buffer(APP_START_ADDRESS + (i*256), &readBuffer[0], 64);
+	res = nvm_write_buffer(APP_START_ADDRESS + (i*256) + 64, &readBuffer[64], 64);
+	res = nvm_write_buffer(APP_START_ADDRESS +(i*256) + 128, &readBuffer[128], 64);
+	res = nvm_write_buffer(APP_START_ADDRESS + (i*256) + 192, &readBuffer[192], 64);
+	
+	*((volatile unsigned int*) 0x41007058) &= ~0x30000UL;
+	dsu_crc32_cal(readBuffer, 256, &resultCrcSd);
+	*((volatile unsigned int*) 0x41007058) |= 0x20000UL;
+	
+	
+	//calculate NVM CRC chunck
+	dsu_crc32_cal(APP_START_ADDRESS + (i*256), 256, &resultCrcNVM);
+	
+	i++;
+}
+	if(resultCrcSd != resultCrcNVM){
+		SerialConsoleWriteString("CRC ERROR\r\n");
+		snprintf(helpStr, 63,"CRC SD CARD: %d  CRC NVM: %d \r\n", resultCrcSd, resultCrcNVM);
+		SerialConsoleWriteString(helpStr);
+		//f_close(&file_object_bin);
+	}
+	
+	//f_close(&file_object_bin);
+}

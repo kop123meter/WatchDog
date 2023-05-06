@@ -215,9 +215,9 @@ SUBDIRS :=  \
 ../src/I2cDriver \
 ../src/IMU \
 ../src/ControlThread \
-../src/speaker \
 ../src/newservo/ \
 ../src/SeesawDriver/ \
+../src/speaker/ \
 ../src/TFTdriver/ \
 ../src/UiHandlerThread \
 ../src/WifiHandlerThread \
@@ -1783,7 +1783,7 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: ARM/GNU Linker : 6.3.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) @"C:\Users\ausa\Desktop\test_no_tft\WINC1500_HTTP_DOWNLOADER_EXAMPLE1\Debug\ld_ar.mk"  $(USER_OBJS) $(LIBS) -mthumb -Wl,-Map="ESE516 MAIN FW.map" --specs=nano.specs -Wl,--start-group -larm_cortexM0l_math -lm  -Wl,--end-group -L"../src/ASF/thirdparty/CMSIS/Lib/GCC"  -Wl,--gc-sections -mcpu=cortex-m0plus -Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam0/utils/linker_scripts/samd21/gcc/samd21g18a_flash.ld -Wl,--section-start=.text=0x12000  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) @"C:\Users\ausa\Desktop\test_for_watchdog\WINC1500_HTTP_DOWNLOADER_EXAMPLE1\Debug\ld_ar.mk"  $(USER_OBJS) $(LIBS) -mthumb -Wl,-Map="ESE516 MAIN FW.map" --specs=nano.specs -Wl,--start-group -larm_cortexM0l_math -lm  -Wl,--end-group -L"../src/ASF/thirdparty/CMSIS/Lib/GCC"  -Wl,--gc-sections -mcpu=cortex-m0plus -Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam0/utils/linker_scripts/samd21/gcc/samd21g18a_flash.ld -Wl,--section-start=.text=0x12000  
 	@echo Finished building target: $@
 	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O binary "ESE516 MAIN FW.elf" "ESE516 MAIN FW.bin"
 	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "ESE516 MAIN FW.elf" "ESE516 MAIN FW.hex"
@@ -1803,5 +1803,5 @@ clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
 	rm -rf "ESE516 MAIN FW.elf" "ESE516 MAIN FW.a" "ESE516 MAIN FW.hex" "ESE516 MAIN FW.bin" "ESE516 MAIN FW.lss" "ESE516 MAIN FW.eep" "ESE516 MAIN FW.map" "ESE516 MAIN FW.srec"
-	rm -rf "C:\Users\ausa\Desktop\test_no_tft\WINC1500_HTTP_DOWNLOADER_EXAMPLE1\Debug\ld_ar.mk"
+	rm -rf "C:\Users\ausa\Desktop\test_for_watchdog\WINC1500_HTTP_DOWNLOADER_EXAMPLE1\Debug\ld_ar.mk"
 	

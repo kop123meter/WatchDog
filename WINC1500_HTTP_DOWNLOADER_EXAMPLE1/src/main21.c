@@ -96,6 +96,7 @@ void vApplicationDaemonTaskStartupHook(void)
 
     // Initialize HW that needs FreeRTOS Initialization
     SerialConsoleWriteString("\r\n\r\nInitialize HW...\r\n");
+	
     if (I2cInitializeDriver() != STATUS_OK) {
         SerialConsoleWriteString("Error initializing I2C Driver!\r\n");
     } else {
@@ -107,8 +108,7 @@ void vApplicationDaemonTaskStartupHook(void)
     } else {
         SerialConsoleWriteString("Initialized Seesaw!\r\n");
     }*/
-
-   
+  
     uint8_t whoamI = 0;
     (lsm6dso_device_id_get(GetImuStruct(), &whoamI));
 

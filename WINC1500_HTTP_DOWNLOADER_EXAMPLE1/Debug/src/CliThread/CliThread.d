@@ -264,7 +264,7 @@ src/CliThread/CliThread.d src/CliThread/CliThread.o: \
  ../src/ASF/common/components/wifi/winc1500/http_downloader_example/samd21g18a_samw25_xplained_pro/conf_sw_timer.h \
  ../src/iot/http/http_entity.h ../src/main.h ../src/newservo/newservo.h \
  ../src/bme680/bme680.h ../src/bme680/bme680_defs.h \
- ../src/I2cDriver/I2cDriver.h ../src/speaker/speaker.h
+ ../src/I2cDriver/I2cDriver.h
 
 ../src/CliThread/CliThread.h:
 
@@ -831,5 +831,3 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/bme680/bme680_defs.h:
 
 ../src/I2cDriver/I2cDriver.h:
-
-../src/speaker/speaker.h:

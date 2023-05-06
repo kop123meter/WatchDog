@@ -41,17 +41,13 @@ extern "C" {
 /** Wi-Fi AP Settings. */
 #define MAIN_WLAN_SSID "AirPennNet-Device"             /**< Destination SSID. Change to your WIFI SSID */
 #define MAIN_WLAN_AUTH M2M_WIFI_SEC_WPA_PSK /**< Security manner */
-<<<<<<< HEAD
 #define MAIN_WLAN_PSK "penn1740wifi"            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
-=======
-#define MAIN_WLAN_PSK ""            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
->>>>>>> b00f8144eb995a238fc0ff0861aa4dc73b08dadd
 
 /** IP address parsing. */
 #define IPV4_BYTE(val, index) ((val >> (index * 8)) & 0xFF)
 
 /** Content URI for download. */
-#define MAIN_HTTP_FILE_URL "https://www.seas.upenn.edu/~edgarc/IoT.pdf"  ///< Change me to the URL to download your OTAU binary file from!
+#define MAIN_HTTP_FILE_URL "http://74.235.202.251/ESE516_MAIN_FW.bin"  ///< Change me to the URL to download your OTAU binary file from!
 
 /** Maximum size for packet buffer. */
 #define MAIN_BUFFER_MAX_SIZE (512)
@@ -115,6 +111,7 @@ struct RgbColorPacket {
 #define BME_TOPIC "WATCHDOG_SENSOR"
 #define SERVO_TOPIC "WATCHDOG_SERVO"
 #define WARNING_TOPIC "WATCHDOG_WARNING"
+#define FW_TOPIC "WATCHDOG_FW_UPDATE"
 
 
 
@@ -148,9 +145,9 @@ struct RgbColorPacket {
 #define CLOUDMQTT_USER_ID "kop"
 
 // Cloud MQTT pASSWORD
-#define CLOUDMQTT_USER_PASSWORD ""
+#define CLOUDMQTT_USER_PASSWORD "Lize987654321"
 
-#define CLOUDMQTT_PORT ""
+#define CLOUDMQTT_PORT 1883
 
 /*
  * A MQTT broker server which was connected.
@@ -173,7 +170,7 @@ static const char main_mqtt_broker[] = "broker.hivemq.com";
 #define PRE_WARNING 3
 #define GAS_WARNING 4
 #define NORMAL_WARNING 5
-#define MAX_TEMP 27
+#define MAX_TEMP 35
 #define MIN_TEMP -1
 
 #define MAX_GAS 100
@@ -194,6 +191,7 @@ void SubscribeHandlerBmeTopic(MessageData *msgData);
 void SubscribeHandlerDistanceTopic(MessageData *msgData);
 void SubscribeHandlerServoLockTopic(MessageData *msgData);
 void SubscribeHandlerServoUnlockTopic(MessageData *msgData);
+void SubscribeHandlerFWTopic(MessageData *msgData);
 void configure_extint_channel(void);
 void configure_extint_callbacks(void);
 void check_sensor_data(int temp,int hum,int pre,int gas);

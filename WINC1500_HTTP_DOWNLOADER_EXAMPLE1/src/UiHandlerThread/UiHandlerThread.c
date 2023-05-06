@@ -72,9 +72,7 @@ void vUiHandlerTask(void *pvParameters)
     // Do initialization code here
     SerialConsoleWriteString("UI Task Started!");
     uiState = UI_STATE_IGNORE_PRESSES;  // Initial state
-   
-   configure_port_speaker_pins();
-	configure_port_servo_pins();
+   //configure_port_speaker_pins();
 	init_bme680();
 	read_sensor_data();
 		//read sensor data
@@ -102,11 +100,10 @@ void vUiHandlerTask(void *pvParameters)
 	*/
 
     // Here we start the loop for the UI State Machine
-	
+	  lock();
 	
     while (1) {
 	
-
 	  // warning_speaker();
         switch (uiState) {
             case (UI_STATE_IGNORE_PRESSES): {
@@ -115,6 +112,7 @@ void vUiHandlerTask(void *pvParameters)
             }
 
             case (UI_STATE_SHOW_MOVES): {
+				/*
                 // Set initial state variable that will be used on the
                 // UI_STATE_Handle_Buttons and need to be initialized once
                 pressedKeys = 0;  // Set number of keys pressed by player to 0.
@@ -137,6 +135,8 @@ void vUiHandlerTask(void *pvParameters)
 
                 // In the beginner example we turn LED0 and LED15 will turn on for 500
                 // ms then we go to UI_STATE_HANDLE_BUTTONS
+				
+				
                 SeesawSetLed(0, red, green, blue);  // Turn button 1 on
                 SeesawOrderLedUpdate();
                 vTaskDelay(10);
@@ -148,7 +148,8 @@ void vUiHandlerTask(void *pvParameters)
                 SeesawOrderLedUpdate();
                 vTaskDelay(10);
                 uiState = UI_STATE_HANDLE_BUTTONS;
-
+				*/
+				
                 break;
             }
 
@@ -159,7 +160,7 @@ void vUiHandlerTask(void *pvParameters)
                 // are when the player RELEASES the button.
 
                 // In this example, we return after only one button press!
-
+				/*
                 uint8_t numPresses = SeesawGetKeypadCount();
                 memset(buttons, 0, BUTTON_PRESSES_MAX);
 
@@ -190,7 +191,7 @@ void vUiHandlerTask(void *pvParameters)
                     playIsDone = true;
                     uiState = UI_STATE_IGNORE_PRESSES;
                 }
-
+				*/
                 break;
             }
 
@@ -201,7 +202,7 @@ void vUiHandlerTask(void *pvParameters)
         }
 
         // After execution, you can put a thread to sleep for some time.
-        vTaskDelay(50);
+        vTaskDelay(500);
     }
 }
 

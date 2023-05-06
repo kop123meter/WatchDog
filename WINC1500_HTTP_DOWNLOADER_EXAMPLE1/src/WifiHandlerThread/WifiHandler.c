@@ -586,8 +586,10 @@ static void configure_http_client(void)
 
     httpc_conf.recv_buffer_size = MAIN_BUFFER_MAX_SIZE;
     httpc_conf.timer_inst = &swt_module_inst;
-    httpc_conf.port = 443;
-    httpc_conf.tls = 1;
+	
+	//For HTTP, comment the two lines below
+    //httpc_conf.port = 443;
+    //httpc_conf.tls = 1;
 
     ret = http_client_init(&http_client_module_inst, &httpc_conf);
     if (ret < 0) {
@@ -659,6 +661,18 @@ void SubscribeHandlerLedTopic(MessageData *msgData)
     }
 }
 
+void SubscribeHandlerFWTopic(MessageData *msgData)
+{
+	//LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
+
+	if(strncmp((char *)msgData->topicName->lenstring.data, FW_TOPIC,msgData->message->payloadlen) == 0){
+		if (strncmp((char*)msgData->message->payload, LED_TOPIC_LED_ON, msgData->message->payloadlen) == 0) {
+		//HTTP_DownloadFileTransaction();
+		WifiHandlerSetState(WIFI_DOWNLOAD_INIT);
+		LogMessage(LOG_DEBUG_LVL, "\r\nStart Downloading!\r\n");	
+		}
+	}
+}
 void SubscribeHandlerServoTopic(MessageData *msgData)
 {
 	//LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
@@ -666,10 +680,48 @@ void SubscribeHandlerServoTopic(MessageData *msgData)
 	// Will receive something of the style "rgb(222, 224, 189)"
 	if(strncmp((char *)msgData->topicName->lenstring.data, SERVO_TOPIC,msgData->message->payloadlen) == 0){
 	if (strncmp((char*)msgData->message->payload, LED_TOPIC_LED_ON, msgData->message->payloadlen) == 0) {
-		lock();
+		int count = 0;
+		port_pin_set_output_level(SERVO_PIN,0);
+		for(int i = 0;i<3000;i++){
+			if(count == 8)
+			{
+				port_pin_set_output_level(SERVO_PIN,1);
+				count = 0;
+			}
+			else{
+				port_pin_set_output_level(SERVO_PIN,0);
+			}
+			//MG90S
+			vTaskDelay(1);
+			//A0090
+			//vTaskDelay(2.4);
+			//delay_ms(1);
+			count++;
+		}
+		port_pin_set_output_level(SERVO_PIN,0);
+		setLock();
 	}
 	else if (strncmp((char*)msgData->message->payload, LED_TOPIC_LED_OFF, msgData->message->payloadlen) == 0) {
-		unlock();
+		int count = 0;
+		port_pin_set_output_level(SERVO_PIN,0);
+		for(int i = 0;i<300;i++){
+			if(count == 4)
+			{
+				port_pin_set_output_level(SERVO_PIN,1);
+				count = 0;
+			}
+			else{
+				port_pin_set_output_level(SERVO_PIN,0);
+			}
+			//MG90S
+			vTaskDelay(9);
+			//A0090
+			//vTaskDelay(3.8);
+			//delay_ms(2);
+			count++;
+		}
+		port_pin_set_output_level(SERVO_PIN,0);
+		setUnLock();
 	}
 	}
 }
@@ -790,6 +842,7 @@ static void mqtt_callback(struct mqtt_module *module_inst, int type, union mqtt_
 				//mqtt_subscribe(module_inst, BME_TOPIC, 2, SubscribeHandlerBmeTopic);
 				//mqtt_subscribe(module_inst, SERVO_LOCK_TOPIC, 0, SubscribeHandlerServoLockTopic);
 				mqtt_subscribe(module_inst, SERVO_TOPIC, 2, SubscribeHandlerServoTopic);
+				mqtt_subscribe(module_inst, FW_TOPIC, 2, SubscribeHandlerFWTopic);
                 /* Enable USART receiving callback. */
 
                 LogMessage(LOG_DEBUG_LVL, "MQTT Connected\r\n");
@@ -1053,7 +1106,8 @@ void vWifiTask(void *pvParameters)
 	
 	
 	/* Initialize the Locker */
-	lock();
+	configure_port_servo_pins();
+    //lock();
 	
     /* Initialize the Timer. */
     configure_timer();
@@ -1065,7 +1119,7 @@ void vWifiTask(void *pvParameters)
     configure_mqtt();
 
     /* Initialize SD/MMC storage. */
-    init_storage();
+   init_storage();
 
     /*Initialize BUTTON 0 as an external interrupt*/
     configure_extint_channel();
@@ -1100,25 +1154,13 @@ void vWifiTask(void *pvParameters)
         sw_timer_task(&swt_module_inst);
     }
 
-    vTaskDelay(10);
+    vTaskDelay(1000);
 
     wifiStateMachine = WIFI_MQTT_HANDLE;
+	
+
    
-    while (1) {
-		read_sensor_data();
-		int temp = (int)getTemperature();
-		int hum = (int)getHumidity();
-		int pressure = (int)getPressure();
-		int gas = (int)getGasResistance();
-		check_sensor_data(temp,hum,pressure,gas);
-		struct BMEDataPacket bme;
-		bme.temperature = temp;
-		bme.humidity = hum;
-		bme.pressure = pressure;
-		bme.warning_status = current_warning;
-		bme.gas_res = (1200 - gas)/1200;
-		WifiAddBmeDataToQueue(&bme);
-		LCD_menu(wifi_status);
+    while (1) {	
         switch (wifiStateMachine) {
             case (WIFI_MQTT_INIT): {
                 MQTT_InitRoutine();
@@ -1145,6 +1187,23 @@ void vWifiTask(void *pvParameters)
                 wifiStateMachine = WIFI_MQTT_INIT;
                 break;
         }
+		
+		
+		read_sensor_data();
+		int temp = (int)getTemperature();
+		int hum = (int)getHumidity();
+		int pressure = (int)getPressure();
+		int gas = (int)getGasResistance();
+		check_sensor_data(temp,hum,pressure,gas);
+		struct BMEDataPacket bme;
+		bme.temperature = temp;
+		bme.humidity = hum;
+		bme.pressure = pressure;
+		bme.warning_status = current_warning;
+		bme.gas_res = (1200 - gas)/1200;
+		WifiAddBmeDataToQueue(&bme);
+		LCD_menu(wifi_status);
+		
         // Check if a new state was called
         uint8_t DataToReceive = 0;
         if (pdPASS == xQueueReceive(xQueueWifiState, &DataToReceive, 0)) {
@@ -1160,7 +1219,7 @@ void vWifiTask(void *pvParameters)
 
         }
 
-        vTaskDelay(1);
+        vTaskDelay(100);
     }
     return;
 }

@@ -170,6 +170,7 @@ static const char ASCII[96][5] = {
 #define MAGENTA   0xF81F
 #define YELLOW    0xFFE0
 
+
 #define DAT_PIN PIN_PA20
 #define SLAVE_SELECT_PIN PIN_PA05
 #define CONF_MASTER_MUX_SETTING SPI_SIGNAL_MUX_SETTING_A
@@ -178,7 +179,6 @@ static const char ASCII[96][5] = {
 #define CONF_MASTER_PINMUX_PAD2 PINMUX_UNUSED
 #define CONF_MASTER_PINMUX_PAD3 PINMUX_UNUSED
 #define CONF_MASTER_SPI_MODULE SERCOM5
-
 
 
 void LCD_rotate(uint8_t m);

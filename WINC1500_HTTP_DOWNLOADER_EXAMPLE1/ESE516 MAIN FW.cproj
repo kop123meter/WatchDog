@@ -1314,9 +1314,9 @@
     <Folder Include="src\I2cDriver" />
     <Folder Include="src\IMU" />
     <Folder Include="src\ControlThread" />
-    <Folder Include="src\speaker" />
     <Folder Include="src\newservo\" />
     <Folder Include="src\SeesawDriver\" />
+    <Folder Include="src\speaker\" />
     <Folder Include="src\TFTdriver\" />
     <Folder Include="src\UiHandlerThread" />
     <Folder Include="src\WifiHandlerThread" />

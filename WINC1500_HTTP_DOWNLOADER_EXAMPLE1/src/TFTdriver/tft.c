@@ -9,7 +9,7 @@
 
 #include "newservo/newservo.h"
 #include "bme680/bme680.h"
-
+//#include "DZ.h"
 #define MAX_X 160
 #define MAX_Y 128
 
@@ -446,12 +446,13 @@ void dingzhen(void){
 void LCD_menu(bool wifistatus){
 	//LCD_clearScreen(WHITE);
 	if(wifistatus)
-	drawString(20,30,"WIFI is Connected!    ",BLUE,WHITE);
-	drawString(50,50,"Welcome home!",BLACK,WHITE);
+	drawString(50,20,"Welcome home!",BLACK,WHITE);
+	drawString(20,40,"WIFI is Connected!    ",BLUE,WHITE);
+	
 	if(getLock()){
 		drawString(20,60,"WatchDog Status: Locked  ",RED,WHITE);
 	}
-	else{drawString(20,60,"WatchDog Status: Unlocked",RED,WHITE);}
+	else{drawString(20,60,"WatchDog Status: Unlocked",GREEN,WHITE);}
 	
 	char buffer[20];
 	memset(buffer,0,sizeof(buffer));
